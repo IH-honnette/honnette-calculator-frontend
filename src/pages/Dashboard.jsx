@@ -1,93 +1,99 @@
-import React from 'react';
-import {GridComponent, ColumnDirective, ColumnsDirective,
-Resize, Sort, ContextMenu, Filter, Page, ExcelExport,
-PdfExport, Edit, Inject} from '@syncfusion/ej2-react-grids';
-import { BsCurrencyDollar } from 'react-icons/bs';
-import { Button } from '../components';
-import { 
-  earningData,  
-  ordersData,
-  ordersGrid} from '../data/dummy';
-import {Header } from '../components'
+import React, { useState, useEffect } from "react";
 
 const Dashboard = () => {
+  const operations = ["+", "*", "**", "-", "/", "log", "ln"];
+  const [active, setActive] = useState(false);
+  const [operand1, setOperand1] = useState("");
+  const [operand2, setOperand2] = useState("");
+  const [operation, setOperation] = useState("");
+  const [text, setText] = useState("");
 
-  const AddProduct =() => {}
+  const handleOperand1 = (event) => {
+    setOperand1(event.target.value);
+  };
+
+  const handleOperand2 = (event) => {
+    setOperand2(event.target.value);
+  };
+
+  const handleOperation = (value) => {
+    setOperation(value);
+  };
+
+  //integrate with the backend
+  const handleSubmit = async (e) => {
+    // e.preventDefault();
+    // await axios
+    //   .post("/calculate", {
+    //     operand1: parseInt(operand1),
+    //     operand2: parseInt(operand2),
+    //     operation: operation,
+    //   })
+    //   .then((response) => {
+    //     setText(`${text} = ${response?.Response}`);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  };
+
+  useEffect(() => {
+    setText(`${operand1} ${operation} ${operand2}`);
+  }, [operand1, operand2, operation]);
 
   return (
-    <div className='mt-12'>
-      <div className='flex flex-wrap lg:flex-nowrap justify-center'>
-        <div className='bg-white dark:text-gray-200 dark:bg-secondary-dark-bg h-44
-        rounded-xl w-full lg:w-80 p-8 pt-9 m-3'
-        style = {{backgroundImage: "https://blog.vantagecircle.com/content/images/2021/06/Profit-Sharing.png"}}>
-          <div className='flex justify-between items-center'>
-            <div>
-              <p className='font-bold text-gray-400'>Total Profit</p>
-              <p className='text-2xl'>$63,448.89<sub className="text-amber-500 text-sm">/per month</sub></p>
-            </div>
+    <div className="container shadow p-8">
+      <div className="text-xl text-center m-3">Simple Online calculator</div>
+      <p style ={{color: 'darkgrey'}}> Choose operation:</p>
+      <div className="flex flex-wrap">
+        {operations.map((operation, idx) => (
+          <div className="m-2">
+            <button
+              key={idx}
+              isActive={active}
+              style={{
+                backgroundColor: "#45D1DA",
+                padding: "3px",
+                width: "60px",
+              }}
+              className="text-white text-center p-2 rounded hover:drop-shadow-xl"
+              onClick={() => handleOperation(operation)}>
+              {operation}
+            </button>
           </div>
-        </div>
-        <div className='flex m-3 flex-wrap justify-center gap-1 items-center'>
-          {earningData.map((item) => (
-            <div
-               key={item.title}
-               className='bg-white dark:text-gray-200 
-               dark:bg-secondary-dark-bg md:w-56 p-4 pt-8 rounded-2xl'
-            >
-              <button type='button'
-              style={{color: item.iconColor,
-              backgroundColor: item.iconBg}}
-              className="text-2xl opacity-0.9 rounded-full
-              p-4 hover:drop-shadow-xl">
-                {item.icon}
-              </button>
-              <p className='mt-3'>
-                <span className='text-lg font-semibold'>
-                   {item.amount}
-                </span>
-                <span className={`text-sm text-${item.pcColor} ml-2`}>
-                  {item.percentage}
-                </span>
-              </p>
-              <p className='text-sm text-gray-400 mt-1'>{item.title}</p>
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
-        {/* Products table */}
-      <div className='m-3 bg-white rounded-xl'>
-        {/* <Header title="Products" /> */}
-        <Button 
-               color="white"
-               bgColor="#45D1DA"
-               text="+ Add Product"
-               borderRadius ="10px"
-               size="md"
-               margin = "2px"
-               clicked={AddProduct}
-        />
-        <p className="text-center">Products</p>
-        <GridComponent
-            id="gridcomp"
-            dataSource ={ordersData}
-            allowPaging
-            allowSorting
-        >
-          <ColumnsDirective>
-            {ordersGrid.map((item, index) => (
-              <ColumnDirective
-                key={index} {...item}
-              />
-              
-            ))}
-          </ColumnsDirective>
-          <Inject services={[Resize,Sort ,
-          ContextMenu, Filter, Page, ExcelExport, Edit,
-          PdfExport]}/>
-        </GridComponent> 
-      </div>
+      <form action="#" onSubmit={handleSubmit} className="w-full p-2 ">
+        <div className="flex mt-2 mr-2 mb-3 space-x-4">
+          <input
+            className="border-1 border-gray-200 rounded outline-none p-2"
+            type="text"
+            placeholder="Enter first number"
+            value={operand1}
+            onChange={handleOperand1}
+          />
+          <input
+            className="border-1 border-gray-200 rounded outline-none p-2"
+            type="text"
+            placeholder="Enter second number"
+            value={operand2}
+            onChange={handleOperand2}
+          />
+        </div>
+        <div className="p-3 bg-green-100">
+          <p>{text}</p>
+        </div>
+        <div className="bg-blue-500 text-center text-white rounded mt-5 mb-3 w-1/3">
+          <button
+            className="p-2 text-center outline-none"
+            type="submit"
+            onClick={() => handleSubmit()}>
+            calculate
+          </button>
+        </div>
+      </form>
     </div>
-  )
-}
+  );
+};
 
 export default Dashboard;
